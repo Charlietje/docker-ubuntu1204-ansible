@@ -6,7 +6,7 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu/ precise main multiverse" >> /etc
     && apt-get update \
     && apt-get install -y --no-install-recommends \
        software-properties-common dirmngr \
-       python-software-properties curl \
+       python-software-properties curl sudo \
     && rm -rf /var/lib/apt/lists/* \
     && rm -Rf /usr/share/doc && rm -Rf /usr/share/man \
     && apt-get clean
