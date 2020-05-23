@@ -26,5 +26,13 @@ RUN echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 # Workaround for pleaserun tool that Logstash uses
 RUN rm -rf /sbin/initctl && ln -s /sbin/initctl.distrib /sbin/initctl
 
+# Create `ansible` user with sudo permissions
+ENV ANSIBLE_USER=ansible SUDO_GROUP=sudo
+RUN set -xe \
+  && groupadd -r ${ANSIBLE_USER} \
+  && useradd -m -g ${ANSIBLE_USER} ${ANSIBLE_USER} \
+  && usermod -aG ${SUDO_GROUP} ${ANSIBLE_USER} \
+  && sed -i "/^%${SUDO_GROUP}/s/ALL\$/NOPASSWD:ALL/g" /etc/sudoers
+
 VOLUME ["/sys/fs/cgroup"]
 CMD ["/sbin/init"]
