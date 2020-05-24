@@ -20,6 +20,12 @@ RUN apt-add-repository -y ppa:ansible/ansible \
     && touch -m -t 200101010101.01 /var/lib/apt/lists \
     && apt-get clean
 
+# Remove unnecessary getty and udev services that can result in high CPU usage when using
+# multiple containers with Molecule (https://github.com/ansible/molecule/issues/1104)
+RUN rm -f /etc/init.d/udev* && \
+    rm -f /etc/init/udev* && \
+    rm -f /etc/init/tty*.conf
+
 # Install Ansible inventory file
 RUN echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 
